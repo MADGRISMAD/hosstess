@@ -8,16 +8,33 @@
       <!-- Encabezado -->
       <div class="flex justify-between items-center mb-8">
         <div>
-          <h1 class="text-2xl font-semibold text-gray-800">Gourmet Delicatessen</h1>
+          <h1 class="text-3xl font-bold text-gray-800">Gourmet Delicatessen</h1>
           <p class="text-sm text-gray-500">Martes, 2 de Febrero 2023</p>
         </div>
         <div class="relative">
           <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
-          <input
-            v-model="search"
-            class="w-64 pl-10 bg-white border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-500"
-            placeholder="Buscar productos gourmet..."
-          />
+          <input v-model="search"
+            class="w-64 pl-10 bg-white border border-gray-300 rounded-full shadow-md focus:ring focus:ring-indigo-500"
+            placeholder="Buscar productos gourmet..." />
+        </div>
+      </div>
+
+      <!-- Selección de Mesa -->
+      <div class="mb-10">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Selecciona una Mesa</h2>
+        <div class="flex flex-wrap gap-6 justify-start">
+          <div v-for="mesa in availableTables" :key="mesa.id" @click="seleccionarMesa(mesa)" :class="{
+            'ring-2 ring-green-500 scale-105': mesaSeleccionada?.id === mesa.id,
+            'hover:shadow-lg': mesaSeleccionada?.id !== mesa.id,
+          }"
+            class="w-40 h-40 flex flex-col items-center justify-center p-4 bg-white shadow-md rounded-xl cursor-pointer transition-all transform hover:scale-105">
+            <div class="w-16 h-16 flex items-center justify-center rounded-full"
+              :class="mesaSeleccionada?.id === mesa.id ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'">
+              🪑
+            </div>
+            <h3 class="mt-3 font-bold text-gray-800">{{ mesa.nombre }}</h3>
+            <p class="text-sm text-gray-500">Capacidad: {{ mesa.capacidad }}</p>
+          </div>
         </div>
       </div>
 
@@ -26,12 +43,9 @@
         <!-- Categorías -->
         <div class="mb-8">
           <div class="flex space-x-4 mb-6 overflow-x-auto pb-2">
-            <button
-              v-for="menu in menus"
-              :key="menu.id || menu.name"
-              class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700"
-              @click="loadMenuProducts(menu.id)"
-            >
+            <button v-for="menu in menus" :key="menu.id || menu.name"
+              class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 shadow"
+              @click="loadMenuProducts(menu.id)">
               {{ menu.name || 'Sin Nombre' }}
             </button>
           </div>
@@ -39,13 +53,11 @@
 
         <!-- Productos -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div
-  v-for="producto in productosFiltrados"
-  :key="producto.id || producto.name"
-  @click="agregarAOrden(producto)"
->
+          <div v-for="producto in productosFiltrados" :key="producto.id || producto.name"
+            @click="agregarAOrden(producto)" class="cursor-pointer">
             <div class="h-32 bg-gray-200 rounded-md mb-4 flex items-center justify-center">
-              <span class="text-gray-500">Imagen</span>
+              <img v-if="producto.imgURL" :src="producto.imgURL" alt="Imagen del producto"
+                class="object-cover w-full h-full rounded-md" @error="producto.imgURL = 'ruta_de_respaldo.jpg'" />
             </div>
             <h3 class="font-semibold mb-2 text-gray-800">{{ producto.name || 'Producto Desconocido' }}</h3>
             <p class="text-sm text-gray-600 mb-2">{{ producto.description || 'Sin descripción disponible' }}</p>
@@ -62,12 +74,15 @@
   </div>
 </template>
 
+
+
+
 <script>
 import Navbar from "../components/Sidebar.vue";
 import LSidebar from "../components/LSidebar.vue";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { apiService } from "../apiService";
-import { store } from "../store"; // Importar el estado compartido
+import { store } from "../store";
 
 export default {
   components: {
@@ -78,8 +93,16 @@ export default {
     const search = ref("");
     const menus = ref([]);
     const productos = ref([]);
+    const tables = ref([]); // Todas las mesas
+
+    // Mesa seleccionada (estado compartido con el store)
+    const mesaSeleccionada = computed(() => store.mesaSeleccionada);
 
     // Computados
+    const availableTables = computed(() =>
+      tables.value.filter((table) => table.disponible)
+    );
+
     const productosFiltrados = computed(() => {
       if (!search.value) return productos.value;
       return productos.value.filter((producto) =>
@@ -97,6 +120,15 @@ export default {
       }
     };
 
+    const fetchTables = async () => {
+      try {
+        const data = await apiService.getTables();
+        tables.value = Array.isArray(data) ? data : [];
+      } catch (error) {
+        console.error("Error al obtener las mesas:", error);
+      }
+    };
+
     const loadMenuProducts = async (menuId) => {
       if (!menuId) {
         console.error("El ID del menú no es válido.");
@@ -111,26 +143,40 @@ export default {
     };
 
     const agregarAOrden = (producto) => {
-  if (!store.platillosSeleccionados) {
-    console.error("Error: 'platillosSeleccionados' no está definido en el store.");
-    return;
-  }
+      if (!mesaSeleccionada.value) {
+        alert("Por favor selecciona una mesa antes de agregar productos.");
+        return;
+      }
 
-  store.platillosSeleccionados.push({ ...producto, quantity: 1 });
-};
+      store.platillosSeleccionados.push({
+        ...producto,
+        quantity: 1,
+        tableId: mesaSeleccionada.value.id, // Agregar el ID de la mesa al producto
+      });
+    };
 
+    const seleccionarMesa = (mesa) => {
+      store.mesaSeleccionada = mesa; // Actualiza la mesa seleccionada en el store
+    };
 
-    // Montaje
-    fetchMenus();
+    onMounted(() => {
+      fetchMenus();
+      fetchTables();
+    });
 
     return {
       search,
       menus,
       productos,
+      tables,
+      availableTables,
+      mesaSeleccionada,
       productosFiltrados,
       loadMenuProducts,
       agregarAOrden,
+      seleccionarMesa,
     };
   },
 };
+
 </script>

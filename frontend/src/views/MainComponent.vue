@@ -199,8 +199,9 @@ function cerrarMesa() {
 
 async function ocuparMesa() {
   try {
-    await apiService.editTable(mesaSeleccionada.value.id, mesaSeleccionada.value);
     mesaSeleccionada.value.disponible = false;
+    await apiService.editTable(mesaSeleccionada.value.id, mesaSeleccionada.value);
+
     cerrarMesa();
   } catch (error) {
     console.error('Error al ocupar mesa:', error);
@@ -209,8 +210,9 @@ async function ocuparMesa() {
 
 async function desocuparMesa() {
   try {
-    await apiService.editTable(mesaSeleccionada.value.id, mesaSeleccionada.value);
     mesaSeleccionada.value.disponible = true;
+    await apiService.editTable(mesaSeleccionada.value.id, mesaSeleccionada.value);
+    
     cerrarMesa();
   } catch (error) {
     console.error('Error al desocupar mesa:', error);

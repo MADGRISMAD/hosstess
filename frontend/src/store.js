@@ -1,5 +1,6 @@
 import { reactive } from "vue";
 
 export const store = reactive({
-  platillosSeleccionados: [], // Este array debe estar definido
+  platillosSeleccionados: [], // Lista de productos seleccionados
+  mesaSeleccionada: null, // Información de la mesa seleccionada
 });

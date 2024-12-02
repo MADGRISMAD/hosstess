@@ -2,6 +2,12 @@
   <div class="w-90 max-w-xs space-y-4 bg-white p-4 shadow-md rounded-md">
     <h2 class="text-lg font-semibold mb-4 text-center">Estado de Cuenta</h2>
 
+    <!-- Información de la Mesa -->
+    <div v-if="mesaSeleccionada" class="p-4 bg-gray-100 rounded-md">
+      <p class="text-sm text-gray-700">Mesa: <strong>{{ mesaSeleccionada.nombre }}</strong></p>
+      <p class="text-sm text-gray-700">Capacidad: <strong>{{ mesaSeleccionada.capacidad }} personas</strong></p>
+    </div>
+
     <!-- Lista de Productos -->
     <ul class="space-y-4">
       <li v-for="(producto, index) in store.platillosSeleccionados" :key="index">
@@ -85,7 +91,14 @@ import { computed, ref } from "vue";
 import { apiService } from "../apiService"; // Importar el servicio
 
 export default {
-  setup() {
+  props: {
+    mesaSeleccionada: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
+  setup(props) {
     // Estado
     const deliveryMethod = ref("dine-in"); // "Para Comer Aquí" por defecto
     const deliveryTaxRate = 50; // Cobro fijo por repartidor ($50 MXN)
@@ -125,28 +138,28 @@ export default {
     };
 
     const finalizeOrder = async () => {
+      if (!props.mesaSeleccionada) {
+        alert("Por favor selecciona una mesa antes de finalizar el pedido.");
+        return;
+      }
+
       const orderDTO = {
-        mesa: deliveryMethod.value === "dine-in" ? "En Restaurante" : "Para Llevar",
+        mesa: props.mesaSeleccionada.id, // ID de la mesa seleccionada
         description: `Orden ${deliveryMethod.value === "dine-in" ? "en mesa" : "para llevar"} - ${new Date().toLocaleString()}`,
         creationDate: new Date().toISOString(),
         ready: false,
         complete: false,
         foods: store.platillosSeleccionados.map((producto) => ({
           food: producto.id, // Solo enviamos el ID del alimento
-          quantity: producto.quantity
-        }    
-      )
-    ),
-    modality: 1
-    
-
+          quantity: producto.quantity,
+        })),
+        modality: deliveryMethod.value === "dine-in" ? 1 : 2, // Diferenciar modalidad
       };
+
       console.log("DTO de orden:", orderDTO);
 
       try {
-        console.log("orderDTO:", orderDTO);
         const response = await apiService.createOrder(orderDTO);
-
         alert(`¡Pedido enviado con éxito! ID: ${response.id}`);
         console.log("Orden creada:", response);
       } catch (error) {
@@ -154,7 +167,6 @@ export default {
         alert("Hubo un error al enviar la orden.");
       }
     };
-
 
     // Formatear números como moneda en pesos mexicanos
     const formatearMoneda = (cantidad) => {
@@ -177,6 +189,7 @@ export default {
       setDeliveryMethod,
       finalizeOrder,
       formatearMoneda,
+      mesaSeleccionada: props.mesaSeleccionada, // Detalles de la mesa seleccionada
     };
   },
 };
