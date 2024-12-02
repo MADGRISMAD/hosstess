@@ -67,20 +67,25 @@
           $route.path === '/orders' ? 'bg-gray-200' : ''
         ]"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6 text-gray-800"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 9V5.25M8.25 9V5.25m8.25 10.5V13.5m0 2.25v-4.5m3 4.5h-1.5m-12 0H5.25m13.5-4.5H5.25m2.25 0H8.25m-3 3h1.5"
-          />
-        </svg>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6 text-gray-800"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M7.5 3.75h6.75L18 8.25v12a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75v-16.5a.75.75 0 01.75-.75z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M14.25 3.75v4.5h4.5"
+        />
+      </svg>
       </router-link>
 
       <!-- Ruta Lista de Espera -->

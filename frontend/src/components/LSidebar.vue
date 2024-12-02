@@ -146,7 +146,7 @@ export default {
       const orderDTO = {
         mesa: props.mesaSeleccionada.id, // ID de la mesa seleccionada
         description: `Orden ${deliveryMethod.value === "dine-in" ? "en mesa" : "para llevar"} - ${new Date().toLocaleString()}`,
-        creationDate: new Date().toISOString(),
+        creationDate: new Date().toLocaleString(),
         ready: false,
         complete: false,
         foods: store.platillosSeleccionados.map((producto) => ({
