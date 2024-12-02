@@ -20,23 +20,34 @@
       </div>
 
       <!-- Selección de Mesa -->
-      <div class="mb-10">
-        <h2 class="text-xl font-semibold text-gray-700 mb-4">Selecciona una Mesa</h2>
-        <div class="flex flex-wrap gap-6 justify-start">
-          <div v-for="mesa in availableTables" :key="mesa.id" @click="seleccionarMesa(mesa)" :class="{
-            'ring-2 ring-green-500 scale-105': mesaSeleccionada?.id === mesa.id,
-            'hover:shadow-lg': mesaSeleccionada?.id !== mesa.id,
-          }"
-            class="w-40 h-40 flex flex-col items-center justify-center p-4 bg-white shadow-md rounded-xl cursor-pointer transition-all transform hover:scale-105">
-            <div class="w-16 h-16 flex items-center justify-center rounded-full"
-              :class="mesaSeleccionada?.id === mesa.id ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'">
-              🪑
-            </div>
-            <h3 class="mt-3 font-bold text-gray-800">{{ mesa.nombre }}</h3>
-            <p class="text-sm text-gray-500">Capacidad: {{ mesa.capacidad }}</p>
-          </div>
-        </div>
+      <!-- Selección de Mesa -->
+<div class="mb-10">
+  <h2 class="text-xl font-semibold text-gray-700 mb-4">Selecciona una Mesa</h2>
+  <div class="flex flex-wrap gap-4 justify-start">
+    <div
+      v-for="mesa in availableTables"
+      :key="mesa.id"
+      @click="seleccionarMesa(mesa)"
+      :class="[
+        'flex items-center p-4 w-64 h-20 rounded-lg shadow cursor-pointer transition-all border',
+        mesaSeleccionada?.id === mesa.id ? 'border-green-500 bg-green-100' : 'border-gray-300 bg-white hover:bg-gray-100'
+      ]"
+    >
+      <div
+        class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full"
+        :class="mesaSeleccionada?.id === mesa.id ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'"
+      >
+        🪑
       </div>
+      <div class="ml-4">
+        <h3 class="font-bold text-gray-800">{{ mesa.nombre }}</h3>
+        <p class="text-sm text-gray-500">Capacidad: {{ mesa.capacidad }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
       <!-- Categorías y vista principal -->
       <div>
@@ -44,7 +55,7 @@
         <div class="mb-8">
           <div class="flex space-x-4 mb-6 overflow-x-auto pb-2">
             <button v-for="menu in menus" :key="menu.id || menu.name"
-              class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 shadow"
+              class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-900 shadow"
               @click="loadMenuProducts(menu.id)">
               {{ menu.name || 'Sin Nombre' }}
             </button>
@@ -54,18 +65,24 @@
         <!-- Productos -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div v-for="producto in productosFiltrados" :key="producto.id || producto.name"
-            @click="agregarAOrden(producto)" class="cursor-pointer">
-            <div class="h-32 bg-gray-200 rounded-md mb-4 flex items-center justify-center">
+            @click="agregarAOrden(producto)"
+            class="cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-4">
+            <div class="h-40 bg-gray-200 rounded-md mb-4 overflow-hidden flex items-center justify-center">
               <img v-if="producto.imgURL" :src="producto.imgURL" alt="Imagen del producto"
-                class="object-cover w-full h-full rounded-md" @error="producto.imgURL = 'ruta_de_respaldo.jpg'" />
+                class="object-cover w-full h-full" @error="producto.imgURL = 'ruta_de_respaldo.jpg'" />
             </div>
-            <h3 class="font-semibold mb-2 text-gray-800">{{ producto.name || 'Producto Desconocido' }}</h3>
-            <p class="text-sm text-gray-600 mb-2">{{ producto.description || 'Sin descripción disponible' }}</p>
+            <h3 class="font-semibold mb-2 text-gray-800 truncate">{{ producto.name || 'Producto Desconocido' }}</h3>
+            <p class="text-sm text-gray-600 mb-4">{{ producto.description || 'Sin descripción disponible' }}</p>
             <div class="flex justify-between items-center">
-              <p class="text-gray-800 font-semibold">${{ producto.price || '0.00' }}</p>
+              <p class="text-gray-800 font-bold text-lg">${{ producto.price || '0.00' }}</p>
+              <button class="px-3 py-1 text-sm bg-green-500 text-white rounded-full hover:bg-green-600"
+                @click.stop="agregarAOrden(producto)">
+                Agregar
+              </button>
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
