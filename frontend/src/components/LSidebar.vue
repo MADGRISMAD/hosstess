@@ -79,7 +79,7 @@
     </div>
 
     <!-- Botón de finalizar -->
-    <button class="w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-md" @click="finalizeOrder">
+    <button class="w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white py-2 rounded-md" @click="completeOrder">
       Finalizar Pedido
     </button>
   </div>
@@ -95,7 +95,7 @@ export default {
     mesaSeleccionada: {
       type: Object,
       required: false,
-      default: null,
+      default: () => {},
     },
   },
   setup(props) {
@@ -157,6 +157,8 @@ export default {
       };
       try {
         const response = await apiService.createOrder(orderDTO);
+        store.platillosSeleccionados = [];
+        store.mesaSeleccionada = {};
         alert(`¡Pedido enviado con éxito! ID: ${response.id}`);
         console.log("Orden creada:", response);
       } catch (error) {
@@ -186,9 +188,14 @@ export default {
       setDeliveryMethod,
       finalizeOrder,
       formatearMoneda,
-      mesaSeleccionada: props.mesaSeleccionada, // Detalles de la mesa seleccionada
     };
   },
+  methods: {
+    async completeOrder() {
+      await this.finalizeOrder();
+      this.$emit("completeOrder");
+    }
+  }
 };
 </script>
 

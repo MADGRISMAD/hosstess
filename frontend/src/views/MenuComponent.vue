@@ -7,8 +7,8 @@
       <!-- Encabezado -->
       <div class="flex justify-between items-center mb-8">
         <div>
-          <h1 class="text-3xl font-bold text-gray-800">Gourmet Delicatessen</h1>
-          <p class="text-sm text-gray-500">Martes, 2 de Febrero 2023</p>
+          <h1 class="text-2xl font-semibold text-gray-800">MeSSas</h1>
+          <p class="text-sm text-gray-500">{{ new Date().toLocaleString() }}</p>
         </div>
         <div class="relative">
           <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
@@ -82,7 +82,7 @@
     </div>
 
     <!-- Sidebar Derecho -->
-    <LSidebar :mesaSeleccionada="mesaSeleccionada" />
+    <LSidebar :mesaSeleccionada="mesaSeleccionada" @completeOrder="orderCompleted" />
   </div>
 </template>
 
@@ -106,10 +106,7 @@ export default {
     const menus = ref([]);
     const productos = ref([]);
     const tables = ref([]); // Todas las mesas
-
-    // Mesa seleccionada (estado compartido con el store)
-    const mesaSeleccionada = computed(() => store.mesaSeleccionada);
-
+    const completed = ref(false);
     // Computados
     const availableTables = computed(() =>
       tables.value.filter((table) => table.disponible)
@@ -154,23 +151,6 @@ export default {
       }
     };
 
-    const agregarAOrden = (producto) => {
-      if (!mesaSeleccionada.value) {
-        alert("Por favor selecciona una mesa antes de agregar productos.");
-        return;
-      }
-
-      store.platillosSeleccionados.push({
-        ...producto,
-        quantity: 1,
-        tableId: mesaSeleccionada.value.id, // Agregar el ID de la mesa al producto
-      });
-    };
-
-    const seleccionarMesa = (mesa) => {
-      store.mesaSeleccionada = mesa; // Actualiza la mesa seleccionada en el store
-    };
-
     onMounted(() => {
       fetchMenus();
       fetchTables();
@@ -182,12 +162,40 @@ export default {
       productos,
       tables,
       availableTables,
-      mesaSeleccionada,
       productosFiltrados,
       loadMenuProducts,
-      agregarAOrden,
-      seleccionarMesa,
+      fetchMenus,
+      fetchTables,
+      completed,
     };
+  },
+  data() {
+    return {
+      mesaSeleccionada: {}
+    }
+  },
+  mounted() {
+    this.loadMenuProducts("674d3d61696beb514f1fdda8");
+  },
+  methods: {
+    orderCompleted() {
+      this.fetchTables();
+      this.mesaSeleccionada = {};
+    },
+    seleccionarMesa(mesa) {
+      this.mesaSeleccionada = mesa;
+    },
+    agregarAOrden(producto) {
+      if (!this.mesaSeleccionada.id) {
+        alert("Por favor selecciona una mesa antes de agregar productos.");
+        return;
+      }
+      store.platillosSeleccionados.push({
+        ...producto,
+        quantity: 1,
+        tableId: this.mesaSeleccionada.id, // Agregar el ID de la mesa al producto
+      });
+    },
   },
 };
 

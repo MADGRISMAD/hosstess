@@ -13,7 +13,7 @@
     <nav class="flex flex-col space-y-6 flex-1 py-4 items-center">
       <!-- Ruta Mesas -->
       <router-link
-        to="/main"
+        to="/"
         :class="[ 
           'flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100',
           $route.path === '/main' ? 'bg-gray-200' : ''

@@ -33,27 +33,15 @@ export default Axios;
 
 // Define las rutas
 import main from "./views/MainComponent.vue";
-import Login from "./views/LoginComponent.vue";
-import Register from "./views/RegisterComponent.vue";
 import menu from "./views/MenuComponent.vue";
 import waitlist from "./views/WaitListComponent.vue";
 import orders from "./views/OrderComponent.vue";
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/main',
+    path: '/',
     name: 'main',
     component: main,
-  },
-  {
-    path: '/',
-    name: 'login',
-    component: Login,
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: Register,
   },
   {
     path: '/menu',
