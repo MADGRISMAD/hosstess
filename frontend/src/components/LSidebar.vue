@@ -155,9 +155,6 @@ export default {
         })),
         modality: deliveryMethod.value === "dine-in" ? 1 : 2, // Diferenciar modalidad
       };
-
-      console.log("DTO de orden:", orderDTO);
-
       try {
         const response = await apiService.createOrder(orderDTO);
         alert(`¡Pedido enviado con éxito! ID: ${response.id}`);

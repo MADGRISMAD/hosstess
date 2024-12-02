@@ -2,7 +2,6 @@
   <div class="flex min-h-screen bg-gray-100">
     <!-- Sidebar Izquierdo -->
     <Navbar />
-
     <!-- Contenido principal -->
     <div class="flex-1 p-8 overflow-y-auto">
       <!-- Encabezado -->
@@ -18,37 +17,33 @@
             placeholder="Buscar productos gourmet..." />
         </div>
       </div>
-
       <!-- Selección de Mesa -->
       <!-- Selección de Mesa -->
-<div class="mb-10">
-  <h2 class="text-xl font-semibold text-gray-700 mb-4">Selecciona una Mesa</h2>
-  <div class="flex flex-wrap gap-4 justify-start">
-    <div
-      v-for="mesa in availableTables"
-      :key="mesa.id"
-      @click="seleccionarMesa(mesa)"
-      :class="[
-        'flex items-center p-4 w-64 h-20 rounded-lg shadow cursor-pointer transition-all border',
-        mesaSeleccionada?.id === mesa.id ? 'border-green-500 bg-green-100' : 'border-gray-300 bg-white hover:bg-gray-100'
-      ]"
-    >
-      <div
-        class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full"
-        :class="mesaSeleccionada?.id === mesa.id ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'"
-      >
-        🪑
+      <div class="mb-10">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Selecciona una Mesa</h2>
+        <div class="flex flex-wrap gap-4 justify-start">
+          <div
+            v-for="mesa in availableTables"
+            :key="mesa.id"
+            @click="seleccionarMesa(mesa)"
+            :class="[
+              'flex items-center p-4 w-64 h-20 rounded-lg shadow cursor-pointer transition-all border',
+              mesaSeleccionada?.id === mesa.id ? 'border-green-500 bg-green-100' : 'border-gray-300 bg-white hover:bg-gray-100'
+            ]"
+          >
+            <div
+              class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full"
+              :class="mesaSeleccionada?.id === mesa.id ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'"
+            >
+              🪑
+            </div>
+            <div class="ml-4">
+              <h3 class="font-bold text-gray-800">{{ mesa.nombre }}</h3>
+              <p class="text-sm text-gray-500">Capacidad: {{ mesa.capacidad }}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="ml-4">
-        <h3 class="font-bold text-gray-800">{{ mesa.nombre }}</h3>
-        <p class="text-sm text-gray-500">Capacidad: {{ mesa.capacidad }}</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
       <!-- Categorías y vista principal -->
       <div>
         <!-- Categorías -->
@@ -87,7 +82,7 @@
     </div>
 
     <!-- Sidebar Derecho -->
-    <LSidebar />
+    <LSidebar :mesaSeleccionada="mesaSeleccionada" />
   </div>
 </template>
 

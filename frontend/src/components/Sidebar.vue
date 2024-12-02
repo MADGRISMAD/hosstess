@@ -35,12 +35,36 @@
         </svg>
       </router-link>
 
-      <!-- Ruta Personal -->
+      <!-- Ruta Menu -->
       <router-link
-        to="/meseros"
+        to="/menu"
         :class="[ 
           'flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100',
-          $route.path === '/meseros' ? 'bg-gray-200' : ''
+          $route.path === '/menu' ? 'bg-gray-200' : ''
+        ]"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6 text-gray-800"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 9V5.25M8.25 9V5.25m8.25 10.5V13.5m0 2.25v-4.5m3 4.5h-1.5m-12 0H5.25m13.5-4.5H5.25m2.25 0H8.25m-3 3h1.5"
+          />
+        </svg>
+      </router-link>
+
+      <!-- Ruta de ordenes -->
+      <router-link
+        to="/orders"
+        :class="[ 
+          'flex items-center justify-center w-10 h-10 rounded-md hover:bg-gray-100',
+          $route.path === '/orders' ? 'bg-gray-200' : ''
         ]"
       >
         <svg

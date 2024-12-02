@@ -35,8 +35,9 @@ export default Axios;
 import main from "./views/MainComponent.vue";
 import Login from "./views/LoginComponent.vue";
 import Register from "./views/RegisterComponent.vue";
-import meseros from "./views/MenuComponent.vue";
+import menu from "./views/MenuComponent.vue";
 import waitlist from "./views/WaitListComponent.vue";
+import orders from "./views/OrderComponent.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -55,15 +56,20 @@ const routes: RouteRecordRaw[] = [
     component: Register,
   },
   {
-    path: '/meseros',
-    name: 'meseros',
-    component: meseros,
+    path: '/menu',
+    name: 'menu',
+    component: menu,
   },
   {
     path: '/waitlist',
     name: 'waitlist',
     component: waitlist,
   },
+  {
+    path: '/orders',
+    name: 'orders',
+    component: orders,
+  }
 ];
 
 // Crea el enrutador

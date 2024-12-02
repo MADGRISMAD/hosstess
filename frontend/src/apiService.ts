@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { OrderDTO, OrderItem } from './Interfaces/Orders';
+
 const publicUrl = 'http://localhost:8081/';
 // src/services/apiService.ts
   axios.defaults.baseURL = publicUrl;
@@ -129,7 +131,7 @@ export const apiService = {
       });
   },
 
-  createOrder(orderDTO: {mesa:string, description:string, creationDate:string, ready:boolean, complete:boolean, foods: [any],modality:number}) {
+  createOrder(orderDTO: OrderDTO) {
     console.log(orderDTO);
     return axios.post("/orders", orderDTO)
       .then(response => response.data)
